@@ -68,7 +68,7 @@
         })
         const data = await response.json()
         console.log(data);
-
+        
         return data
     }
 
@@ -209,7 +209,6 @@
 
             todoTasksArray.push(todoObj)
         });
-        console.log(todoTasksArray);
 
         // add every object of main ARRAY to 'createTodoItem' func for doing DOM structur & add them to TODO List 
         for (let listObj of todoTasksArray) {
@@ -240,8 +239,6 @@
 
             // here we add new TASK into DOM element
             $todoList.append($todoItem);
-            console.log($todoItem);
-            console.log(todoTasksArray);
 
             // for local storage
             // saveTodoData(keyName, todoTasksArray);
