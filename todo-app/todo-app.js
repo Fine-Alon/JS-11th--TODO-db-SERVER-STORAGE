@@ -21,7 +21,6 @@
             console.log('so sory');
         }
         const data = await response.json()
-        console.log(data);
         return data
     }
 
@@ -118,15 +117,15 @@
         $list.classList.add('list-group');
         return $list;
     };
-    function gettNewId(arr) {
-        let maxId = 0;
-        for (let todoObj of arr) {
-            if (todoObj.userid >= maxId) {
-                maxId = todoObj.userid;
-            }
-        }
-        return maxId += 1;
-    };
+    // function gettNewId(arr) {
+    //     let maxId = 0;
+    //     for (let todoObj of arr) {
+    //         if (todoObj.userid >= maxId) {
+    //             maxId = todoObj.userid;
+    //         }
+    //     }
+    //     return maxId += 1;
+    // };
     function createTodoItem(obj) {
         let $item = document.createElement('li');
 
@@ -152,30 +151,39 @@
         $doneButton.addEventListener('click', function () {
             $item.classList.toggle('list-group-item-success')
             for (let element of todoTasksArray) {
-                if (obj.userid == element.userid) { obj.done = !obj.done };
+                if (obj.id == element.id) {
+
+                    obj.done = !obj.done
+
+                    // change done status at server
+                    obj.done ? doneDataAtServerTrue(obj.id) : doneDataAtServerFalse(obj.id)
+                };
             };
-            saveTodoData(keyName, todoTasksArray);
+            // for localstorage
+            // saveTodoData(keyName, todoTasksArray);
         });
 
         $deliteButton.addEventListener('click', function () {
             if (confirm('are you sure?')) {
                 $item.remove();
+                // delete from array
                 for (let element = 0; element < todoTasksArray.length; element++) {
-                    if (todoTasksArray[element].userid == obj.userid) {
+                    if (todoTasksArray[element].id == obj.id) {
                         todoTasksArray.splice(element, 1);
                     };
                 };
-                saveTodoData(keyName, todoTasksArray);
+                deleteDataFromServer(obj.id)
+                // for localstorage
+                // saveTodoData(keyName, todoTasksArray);
             };
         });
 
-
         return $item
+    };
 
-    };
-    function saveTodoData(keyName, arr) {
-        localStorage.setItem(keyName, JSON.stringify(arr));
-    };
+    // function saveTodoData(keyName, arr) {
+    //     localStorage.setItem(keyName, JSON.stringify(arr));
+    // };
     async function createTodoApp(container, title = 'TODO-LIST', keyWord) {
         // her we assign functions into variables
         let $todoAppTitle = createAppTitle(title);
@@ -186,7 +194,7 @@
         container.append($todoItemForm.$form);
         container.append($todoList);
 
-        keyName = keyWord;
+        // keyName = keyWord;
 
         // check if we have any stored string(ARRAY data) & parse it back to readeble ARRAY 
         // for local storage
@@ -201,6 +209,7 @@
 
             todoTasksArray.push(todoObj)
         });
+        console.log(todoTasksArray);
 
         // add every object of main ARRAY to 'createTodoItem' func for doing DOM structur & add them to TODO List 
         for (let listObj of todoTasksArray) {
@@ -218,8 +227,8 @@
             todoNewTask = {
                 name: $todoItemForm.$input.value,
                 done: false,
-                userid: gettNewId(todoTasksArray),
-                key: keyName,
+                // userid: gettNewId(todoTasksArray),
+                // key: keyName,
             };
 
             addDataToServer(todoNewTask)
