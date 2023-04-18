@@ -5,8 +5,8 @@
         keyName = '';
 
     // 5 server functions...GET, DELETE, doneTrue, doneFalse, ADD 
-    async function getDataFromServer() {
-        const response = await fetch(`http://localhost:3003/api/todos`)
+    async function getDataFromServer(owner) {
+        const response = await fetch(`http://localhost:3003/api/todos?owner=${owner}`)
         const data = await response.json()
         console.log(data);
         return data
@@ -204,7 +204,7 @@
         //     todoTasksArray = JSON.parse(saveData);
         // };
 
-        let serverObjs = await getDataFromServer()
+        let serverObjs = await getDataFromServer(keyWord)
         serverObjs.forEach(todoObj => {
 
             todoTasksArray.push(todoObj)
@@ -228,7 +228,7 @@
                 name: $todoItemForm.$input.value,
                 done: false,
                 // userid: gettNewId(todoTasksArray),
-                // key: keyName,
+                key: keyWord,
             };
 
             addDataToServer(todoNewTask)
