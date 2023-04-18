@@ -73,7 +73,6 @@
         return data
     }
 
-
     function createAppTitle(title) {
         let $appTitle = document.createElement('h2');
         $appTitle.innerHTML = title;
@@ -177,7 +176,7 @@
     function saveTodoData(keyName, arr) {
         localStorage.setItem(keyName, JSON.stringify(arr));
     };
-    function createTodoApp(container, title = 'TODO-LIST', keyWord) {
+    async function createTodoApp(container, title = 'TODO-LIST', keyWord) {
         // her we assign functions into variables
         let $todoAppTitle = createAppTitle(title);
         let $todoItemForm = createTodoItemForm();
@@ -196,6 +195,12 @@
         // if (saveData !== null && saveData !== '') {
         //     todoTasksArray = JSON.parse(saveData);
         // };
+
+        let serverObjs = await getDataFromServer()
+        serverObjs.forEach(todoObj => {
+
+            todoTasksArray.push(todoObj)
+        });
 
         // add every object of main ARRAY to 'createTodoItem' func for doing DOM structur & add them to TODO List 
         for (let listObj of todoTasksArray) {
@@ -217,7 +222,7 @@
                 key: keyName,
             };
 
-            addser
+            addDataToServer(todoNewTask)
 
             let $todoItem = createTodoItem(todoNewTask);
 
@@ -225,7 +230,9 @@
             todoTasksArray.push(todoNewTask);
 
             // here we add new TASK into DOM element
-            $todoList.append($todoItem.$item);
+            $todoList.append($todoItem);
+            console.log($todoItem);
+            console.log(todoTasksArray);
 
             // for local storage
             // saveTodoData(keyName, todoTasksArray);
