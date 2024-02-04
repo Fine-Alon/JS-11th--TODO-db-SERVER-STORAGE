@@ -2,7 +2,8 @@
     // global objects for using from every contains in thise APP func's
     // array that include objects(tasks) that contain(NAME, ID, DONE-status) 
     let todoTasksArray = [],
-        keyName = '';
+        keyName = '',
+        storageTypeServer = false
 
     // 5 server functions...GET, DELETE, doneTrue, doneFalse, ADD 
     async function getDataFromServer(owner) {
@@ -15,7 +16,7 @@
     async function deleteDataFromServer(id) {
         const response = await fetch(`http://localhost:3003/api/todos/${id}`, {
             method: 'DELETE',
-            headers: { 'Content-Type': 'aplication/json' }
+            headers: {'Content-Type': 'aplication/json'}
         })
         if (response.status == 404) {
             console.log('so sory');
@@ -28,7 +29,7 @@
 
         const response = await fetch(`http://localhost:3003/api/todos/${id}`, {
             method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {'Content-Type': 'application/json'},
             // { name?: string, owner?: string, done?: boolean }
             body: JSON.stringify({
                 done: true
@@ -43,7 +44,7 @@
 
         const response = await fetch(`http://localhost:3003/api/todos/${id}`, {
             method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {'Content-Type': 'application/json'},
             // { name?: string, owner?: string, done?: boolean }
             body: JSON.stringify({
                 done: false
@@ -58,7 +59,7 @@
 
         const response = await fetch('http://localhost:3003/api/todos', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {'Content-Type': 'application/json'},
             // { name: string, owner: string, done?: boolean }
             body: JSON.stringify({
                 name: obj.name,
@@ -68,7 +69,7 @@
         })
         const data = await response.json()
         console.log(data);
-        
+
         return data
     }
 
@@ -76,7 +77,32 @@
         let $appTitle = document.createElement('h2');
         $appTitle.innerHTML = title;
         return $appTitle;
-    };
+    }
+
+    function createAppSwitchStorageTypeBtn() {
+        let $btnWrapper = document.createElement('div')
+        $btnWrapper.style.display = 'flex'
+        $btnWrapper.style.justifyContent = 'center'
+        $btnWrapper.style.padding = '10px'
+
+        let $switchStorageTypeBtn = document.createElement('button')
+        $switchStorageTypeBtn.classList.add('btn', 'btn-warning')
+        storageTypeServer
+            ? $switchStorageTypeBtn.innerHTML = 'switch to:  *LOCAL_DATA_STORAGE*'
+            : $switchStorageTypeBtn.innerHTML = 'switch to:  *SERVER_DATA_STORAGE*'
+
+        $switchStorageTypeBtn.addEventListener('click',function (){
+            storageTypeServer = !storageTypeServer
+            storageTypeServer
+                ? $switchStorageTypeBtn.innerHTML = 'switch to:  *LOCAL_DATA_STORAGE*'
+                : $switchStorageTypeBtn.innerHTML = 'switch to:  *SERVER_DATA_STORAGE*'
+        })
+
+        $btnWrapper.append($switchStorageTypeBtn)
+
+        return $btnWrapper
+    }
+
     function createTodoItemForm() {
         let $form = document.createElement('form');
         let $input = document.createElement('input');
@@ -110,8 +136,8 @@
             $input,
             $button,
         }
+    }
 
-    };
     function createTodoList() {
         let $list = document.createElement('ul');
         $list.classList.add('list-group');
@@ -146,7 +172,10 @@
         $buttonGroup.append($deliteButton);
         $item.append($buttonGroup);
 
-        if (obj.done == true) { $item.classList.add('list-group-item-success') };
+        if (obj.done == true) {
+            $item.classList.add('list-group-item-success')
+        }
+        ;
 
         $doneButton.addEventListener('click', function () {
             $item.classList.toggle('list-group-item-success')
@@ -157,8 +186,10 @@
 
                     // change done status at server
                     obj.done ? doneDataAtServerTrue(obj.id) : doneDataAtServerFalse(obj.id)
-                };
-            };
+                }
+                ;
+            }
+            ;
             // for localstorage
             // saveTodoData(keyName, todoTasksArray);
         });
@@ -170,12 +201,15 @@
                 for (let element = 0; element < todoTasksArray.length; element++) {
                     if (todoTasksArray[element].id == obj.id) {
                         todoTasksArray.splice(element, 1);
-                    };
-                };
+                    }
+                    ;
+                }
+                ;
                 deleteDataFromServer(obj.id)
                 // for localstorage
                 // saveTodoData(keyName, todoTasksArray);
-            };
+            }
+            ;
         });
 
         return $item
@@ -186,12 +220,15 @@
     // };
     async function createTodoApp(container, title = 'TODO-LIST', keyWord) {
         // her we assign functions into variables
-        let $todoAppTitle = createAppTitle(title);
-        let $todoItemForm = createTodoItemForm();
-        let $todoList = createTodoList();
+        let $todoAppTitle = createAppTitle(title)
+        let $todoItemForm = createTodoItemForm()
+        let $switchStorageTypeBtn = createAppSwitchStorageTypeBtn()
+        let $todoList = createTodoList()
 
         container.append($todoAppTitle);
-        container.append($todoItemForm.$form);
+        container.append($todoItemForm.$form)
+        container.append($switchStorageTypeBtn)
+        // =============================================== ////
         container.append($todoList);
 
         // keyName = keyWord;
@@ -214,14 +251,16 @@
         for (let listObj of todoTasksArray) {
             let $todoItem = createTodoItem(listObj);
             $todoList.append($todoItem);
-        };
+        }
+        ;
 
         $todoItemForm.$form.addEventListener('submit', function (e) {
             e.preventDefault();
             // check if we have value of input field
             if (!$todoItemForm.$input.value) {
                 return;
-            };
+            }
+            ;
 
             todoNewTask = {
                 name: $todoItemForm.$input.value,
