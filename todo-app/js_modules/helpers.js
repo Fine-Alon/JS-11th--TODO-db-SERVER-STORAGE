@@ -1,8 +1,9 @@
 export function saveStorageTypeServer(isServerStorage) {
     localStorage.setItem('storageTypeServer', JSON.stringify(isServerStorage))
 }
+
 export function isStorageTypeServer() {
-    localStorage.getItem('storageTypeServer')
+    return localStorage.getItem('storageTypeServer')
 }
 
 export function saveTodoData(keyName, arr) {

@@ -1,13 +1,16 @@
-import {storageTypeServer} from '../todo-app.js'
+// import {storageTypeServer} from '../todo-app.js'
 import {deleteDataFromServer, doneDataAtServerFalse, doneDataAtServerTrue} from './serverApi.js'
+import {isStorageTypeServer, saveStorageTypeServer} from "./helpers.js";
 
 export function createAppTitle(title) {
-    let $appTitle = document.createElement('h2');
-    $appTitle.innerHTML = title;
-    return $appTitle;
+    let $appTitle = document.createElement('h2')
+    $appTitle.innerHTML = title
+    return $appTitle
 }
 
 export function createAppSwitchStorageTypeBtn() {
+    let storageTypeServer = isStorageTypeServer()
+
     let $btnWrapper = document.createElement('div')
     $btnWrapper.style.display = 'flex'
     $btnWrapper.style.justifyContent = 'center'
@@ -24,6 +27,8 @@ export function createAppSwitchStorageTypeBtn() {
         storageTypeServer
             ? $switchStorageTypeBtn.innerHTML = 'switch to:  *LOCAL_DATA_STORAGE*'
             : $switchStorageTypeBtn.innerHTML = 'switch to:  *SERVER_DATA_STORAGE*'
+
+        saveStorageTypeServer(storageTypeServer)
     })
 
     $btnWrapper.append($switchStorageTypeBtn)
@@ -32,32 +37,32 @@ export function createAppSwitchStorageTypeBtn() {
 }
 
 export function createTodoItemForm() {
-    let $form = document.createElement('form');
-    let $input = document.createElement('input');
-    let $buttonWrapper = document.createElement('div');
-    let $button = document.createElement('button');
+    let $form = document.createElement('form')
+    let $input = document.createElement('input')
+    let $buttonWrapper = document.createElement('div')
+    let $button = document.createElement('button')
 
-    $form.classList.add('input-group', 'mb-3');
-    $input.classList.add('form-control');
-    $input.placeholder = 'type name of new task';
-    $buttonWrapper.classList.add('input-group-append');
-    $button.classList.add('btn', 'btn-primary');
-    $button.textContent = 'ADD TASK';
+    $form.classList.add('input-group', 'mb-3')
+    $input.classList.add('form-control')
+    $input.placeholder = 'type name of new task'
+    $buttonWrapper.classList.add('input-group-append')
+    $button.classList.add('btn', 'btn-primary')
+    $button.textContent = 'ADD TASK'
     // set DISABLED to form btn when page has been loaded
-    $button.disabled = true;
+    $button.disabled = true
 
     // check if FORM input has text and save the btn DISABLED or diferent
     $input.addEventListener('input', function () {
         if ($input.value !== "") {
-            $button.disabled = false;
+            $button.disabled = false
         } else {
-            $button.disabled = true;
+            $button.disabled = true
         }
-    });
+    })
 
-    $buttonWrapper.append($button);
-    $form.append($input);
-    $form.append($buttonWrapper);
+    $buttonWrapper.append($button)
+    $form.append($input)
+    $form.append($buttonWrapper)
 
     return {
         $form,
@@ -67,30 +72,30 @@ export function createTodoItemForm() {
 }
 
 export function createTodoList() {
-    let $list = document.createElement('ul');
-    $list.classList.add('list-group');
-    return $list;
+    let $list = document.createElement('ul')
+    $list.classList.add('list-group')
+    return $list
 }
 
 export function createTodoItem(obj,todoTasksArr) {
-    let $item = document.createElement('li');
+    let $item = document.createElement('li')
 
-    let $buttonGroup = document.createElement('div');
-    let $doneButton = document.createElement('button');
-    let $deleteButton = document.createElement('button');
+    let $buttonGroup = document.createElement('div')
+    let $doneButton = document.createElement('button')
+    let $deleteButton = document.createElement('button')
 
-    $item.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
+    $item.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center')
     $item.textContent = obj.name;
 
-    $buttonGroup.classList.add('btn-group', 'btn-group-sm');
-    $doneButton.classList.add('btn', 'btn-success');
-    $doneButton.textContent = 'DONE';
-    $deleteButton.classList.add('btn', 'btn-danger');
-    $deleteButton.textContent = 'DELETE';
+    $buttonGroup.classList.add('btn-group', 'btn-group-sm')
+    $doneButton.classList.add('btn', 'btn-success')
+    $doneButton.textContent = 'DONE'
+    $deleteButton.classList.add('btn', 'btn-danger')
+    $deleteButton.textContent = 'DELETE'
 
-    $buttonGroup.append($doneButton);
-    $buttonGroup.append($deleteButton);
-    $item.append($buttonGroup);
+    $buttonGroup.append($doneButton)
+    $buttonGroup.append($deleteButton)
+    $item.append($buttonGroup)
     console.log(obj)
     if (obj.done === true) {
         $item.classList.add('list-group-item-success')
