@@ -9,10 +9,10 @@ export async function getDataFromServer(owner) {
 export async function deleteDataFromServer(id) {
     const response = await fetch(`http://localhost:3003/api/todos/${id}`, {
         method: 'DELETE',
-        headers: {'Content-Type': 'aplication/json'}
+        headers: {'Content-Type': 'application/json'}
     })
-    if (response.status == 404) {
-        console.log('so sory');
+    if (response.status === 404) {
+        console.log('so sorry');
     }
     const data = await response.json()
     return data
@@ -30,7 +30,7 @@ export async function doneDataAtServerTrue(id) {
     })
 
     const data = await response.json()
-    console.log(data);
+    return data
 }
 
 export async function doneDataAtServerFalse(id) {
@@ -45,7 +45,7 @@ export async function doneDataAtServerFalse(id) {
     })
 
     const data = await response.json()
-    console.log(data);
+    return data
 }
 
 export async function addDataToServer(obj) {
@@ -61,8 +61,6 @@ export async function addDataToServer(obj) {
         })
     })
     const data = await response.json()
-    console.log(data);
-
     return data
 }
 

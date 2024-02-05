@@ -72,12 +72,12 @@ export function createTodoList() {
     return $list;
 }
 
-export function createTodoItem(obj) {
+export function createTodoItem(obj,todoTasksArr) {
     let $item = document.createElement('li');
 
     let $buttonGroup = document.createElement('div');
     let $doneButton = document.createElement('button');
-    let $deliteButton = document.createElement('button');
+    let $deleteButton = document.createElement('button');
 
     $item.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
     $item.textContent = obj.name;
@@ -85,20 +85,20 @@ export function createTodoItem(obj) {
     $buttonGroup.classList.add('btn-group', 'btn-group-sm');
     $doneButton.classList.add('btn', 'btn-success');
     $doneButton.textContent = 'DONE';
-    $deliteButton.classList.add('btn', 'btn-danger');
-    $deliteButton.textContent = 'DELITE';
+    $deleteButton.classList.add('btn', 'btn-danger');
+    $deleteButton.textContent = 'DELETE';
 
     $buttonGroup.append($doneButton);
-    $buttonGroup.append($deliteButton);
+    $buttonGroup.append($deleteButton);
     $item.append($buttonGroup);
-
+    console.log(obj)
     if (obj.done === true) {
         $item.classList.add('list-group-item-success')
     }
 
     $doneButton.addEventListener('click', function () {
         $item.classList.toggle('list-group-item-success')
-        for (let element of todoTasksArray) {
+        for (let element of todoTasksArr) {
             if (obj.id === element.id) {
 
                 obj.done = !obj.done
@@ -111,18 +111,18 @@ export function createTodoItem(obj) {
         // saveTodoData(keyName, todoTasksArray)
     })
 
-    $deliteButton.addEventListener('click', function () {
+    $deleteButton.addEventListener('click', function () {
         if (confirm('are you sure?')) {
-            $item.remove();
+            $item.remove()
             // delete from array
-            for (let element = 0; element < todoTasksArray.length; element++) {
-                if (todoTasksArray[element].id === obj.id) {
-                    todoTasksArray.splice(element, 1);
+            for (let element = 0; element < todoTasksArr.length; element++) {
+                if (todoTasksArr[element].id === obj.id) {
+                    todoTasksArr.splice(element, 1)
                 }
             }
             deleteDataFromServer(obj.id)
             // for localstorage
-            // saveTodoData(keyName, todoTasksArray);
+            // saveTodoData(keyName, todoTasksArray)
         }
     })
 

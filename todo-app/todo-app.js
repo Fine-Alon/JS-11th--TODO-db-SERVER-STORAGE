@@ -49,17 +49,16 @@ export async function createTodoApp(container, title = 'TODO-LIST', keyWord) {
 
     // add every object of main ARRAY to 'createTodoItem' func for doing DOM structur & add them to TODO List
     for (let listObj of todoTasksArray) {
-        let $todoItem = createTodoItem(listObj);
+        let $todoItem = createTodoItem(listObj, todoTasksArray);
         $todoList.append($todoItem);
     }
 
-    $todoItemForm.$form.addEventListener('submit', function (e) {
+    $todoItemForm.$form.addEventListener('submit', async function (e) {
         e.preventDefault();
         // check if we have value of input field
         if (!$todoItemForm.$input.value) {
             return
         }
-
 
         const todoNewTask = {
             name: $todoItemForm.$input.value,
@@ -68,22 +67,21 @@ export async function createTodoApp(container, title = 'TODO-LIST', keyWord) {
             key: keyWord,
         }
 
-        addDataToServer(todoNewTask)
+        const newTask = await addDataToServer(todoNewTask)
 
-        let $todoItem = createTodoItem(todoNewTask);
+        let $todoItem = createTodoItem(newTask, todoTasksArray);
 
         // here we add new TASK into Array of tasks
-        todoTasksArray.push(todoNewTask);
+        todoTasksArray.push(newTask)
 
         // here we add new TASK into DOM element
-        $todoList.append($todoItem);
+        $todoList.append($todoItem)
 
         // for local storage
         // saveTodoData(keyName, todoTasksArray);
 
-        // here we delite input value(new task that user has enter) after adding new task
-        $todoItemForm.$input.value = '';
-
+        // here we delete input value(new task that user has enter) after adding new task
+        $todoItemForm.$input.value = ''
     })
 }
 
