@@ -1,21 +1,24 @@
 // LS handler
 import {getNewId, localStorageHandler} from "./helpers.js"
 import {createAppTitle, createTodoItem, createTodoItemForm, createTodoList} from "./visualPart.js"
+import {createSwitchStorageTypeBtn} from "./switchBtn/switchStorageTypeBtn";
 
 // array that include objects(or tasks) that contain(NAME, ID, DONE-status)
 let todoTasksArray = []
 
-export default async function createTodoApp(container, title = 'TODO-LIST', keyWord) {
-    console.log('L.S.')
+export default async function createTodoApp(container, title = 'TODO-LIST', keyWord = 'my') {
+    const STORAGE_TYPE = 'LS'
+    console.log('STORAGE_TYPE:', STORAGE_TYPE)
+
     // her we assign functions into variables
     let $todoAppTitle = createAppTitle(title)
     let $todoItemForm = createTodoItemForm()
-    // let $switchStorageTypeBtn = createAppSwitchStorageTypeBtn()
+    let $switchStorageTypeBtn = createSwitchStorageTypeBtn(STORAGE_TYPE)
     let $todoList = createTodoList()
 
     container.append($todoAppTitle)
     container.append($todoItemForm.$form)
-    // container.append($switchStorageTypeBtn)
+    container.append($switchStorageTypeBtn)
     container.append($todoList)
 
     // check if we have any stored string(ARRAY data) & parse it back to readable ARRAY
@@ -25,7 +28,7 @@ export default async function createTodoApp(container, title = 'TODO-LIST', keyW
     // add every object of main ARRAY to 'createTodoItem' func for doing DOM structure & add them to TODO List
     if (todoTasksArray) {
         for (let listObj of todoTasksArray) {
-            let $todoItem = createTodoItem(listObj, todoTasksArray, keyWord);
+            let $todoItem = createTodoItem(listObj, todoTasksArray, STORAGE_TYPE);
             $todoList.append($todoItem)
         }
     }
@@ -43,7 +46,7 @@ export default async function createTodoApp(container, title = 'TODO-LIST', keyW
             id: getNewId(todoTasksArray),
             key: keyWord,
         }
-        const $todoItem = createTodoItem(todoNewTask, todoTasksArray, 'LS')
+        const $todoItem = createTodoItem(todoNewTask, todoTasksArray, STORAGE_TYPE)
 
         // here we add new TASK into Array of tasks
         todoTasksArray.push(todoNewTask)
