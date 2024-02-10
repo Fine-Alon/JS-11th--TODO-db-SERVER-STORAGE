@@ -1,6 +1,4 @@
-// import {storageTypeServer} from '../todo-app.js'
-import {deleteDataFromServer, doneDataAtServerFalse, doneDataAtServerTrue} from './serverApi.js'
-import {isStorageTypeServer, saveStorageTypeServer} from "./helpers.js";
+import {lSHandler, sSHandler} from "./helpers.js";
 
 export function createAppTitle(title) {
     let $appTitle = document.createElement('h2')
@@ -8,32 +6,10 @@ export function createAppTitle(title) {
     return $appTitle
 }
 
-export function createAppSwitchStorageTypeBtn() {
-    let storageTypeServer = isStorageTypeServer()
-
-    let $btnWrapper = document.createElement('div')
-    $btnWrapper.style.display = 'flex'
-    $btnWrapper.style.justifyContent = 'center'
-    $btnWrapper.style.padding = '10px'
-
-    let $switchStorageTypeBtn = document.createElement('button')
-    $switchStorageTypeBtn.classList.add('btn', 'btn-warning')
-    storageTypeServer
-        ? $switchStorageTypeBtn.innerHTML = 'switch to:  *LOCAL_DATA_STORAGE*'
-        : $switchStorageTypeBtn.innerHTML = 'switch to:  *SERVER_DATA_STORAGE*'
-
-    $switchStorageTypeBtn.addEventListener('click', function () {
-        storageTypeServer = !storageTypeServer
-        storageTypeServer
-            ? $switchStorageTypeBtn.innerHTML = 'switch to:  *LOCAL_DATA_STORAGE*'
-            : $switchStorageTypeBtn.innerHTML = 'switch to:  *SERVER_DATA_STORAGE*'
-
-        saveStorageTypeServer(storageTypeServer)
-    })
-
-    $btnWrapper.append($switchStorageTypeBtn)
-
-    return $btnWrapper
+export function createTodoList() {
+    let $list = document.createElement('ul')
+    $list.classList.add('list-group')
+    return $list
 }
 
 export function createTodoItemForm() {
@@ -53,11 +29,7 @@ export function createTodoItemForm() {
 
     // check if FORM input has text and save the btn DISABLED or diferent
     $input.addEventListener('input', function () {
-        if ($input.value !== "") {
-            $button.disabled = false
-        } else {
-            $button.disabled = true
-        }
+        $button.disabled = !$input.value.trim()
     })
 
     $buttonWrapper.append($button)
@@ -71,13 +43,7 @@ export function createTodoItemForm() {
     }
 }
 
-export function createTodoList() {
-    let $list = document.createElement('ul')
-    $list.classList.add('list-group')
-    return $list
-}
-
-export function createTodoItem(obj,todoTasksArr) {
+export function createTodoItem(obj, todoTasksArr, storageType = 'LS') {
     let $item = document.createElement('li')
 
     let $buttonGroup = document.createElement('div')
@@ -85,7 +51,7 @@ export function createTodoItem(obj,todoTasksArr) {
     let $deleteButton = document.createElement('button')
 
     $item.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center')
-    $item.textContent = obj.name;
+    $item.textContent = obj.name
 
     $buttonGroup.classList.add('btn-group', 'btn-group-sm')
     $doneButton.classList.add('btn', 'btn-success')
@@ -96,38 +62,38 @@ export function createTodoItem(obj,todoTasksArr) {
     $buttonGroup.append($doneButton)
     $buttonGroup.append($deleteButton)
     $item.append($buttonGroup)
-    console.log(obj)
     if (obj.done === true) {
         $item.classList.add('list-group-item-success')
     }
 
-    $doneButton.addEventListener('click', function () {
+    // change done status
+    $doneButton.addEventListener('click', async function () {
         $item.classList.toggle('list-group-item-success')
         for (let element of todoTasksArr) {
             if (obj.id === element.id) {
 
                 obj.done = !obj.done
+                storageType === 'LS'
+                    ? lSHandler.saveTodoData(obj.key, todoTasksArr) // for localstorage
 
-                // change done status at server
-                obj.done ? doneDataAtServerTrue(obj.id) : doneDataAtServerFalse(obj.id)
+                    : await sSHandler.isTaskDone(obj.id, obj.done) // for server storage
             }
         }
-        // for localstorage
-        // saveTodoData(keyName, todoTasksArray)
     })
 
     $deleteButton.addEventListener('click', function () {
         if (confirm('are you sure?')) {
             $item.remove()
+
             // delete from array
             for (let element = 0; element < todoTasksArr.length; element++) {
                 if (todoTasksArr[element].id === obj.id) {
                     todoTasksArr.splice(element, 1)
                 }
             }
-            deleteDataFromServer(obj.id)
-            // for localstorage
-            // saveTodoData(keyName, todoTasksArray)
+            storageType === 'LS'
+                ? lSHandler.saveTodoData(obj.key, todoTasksArr)   // for localstorage
+                : sSHandler.deleteDataFromServer(obj.id)                    // for server storage
         }
     })
 
