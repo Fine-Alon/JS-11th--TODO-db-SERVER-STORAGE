@@ -1,22 +1,3 @@
-export function getCurrentStorageType() {
-    return localStorage.getItem('storageType') || 'local';
-}
-
-export function switchStorageType() {
-    const currentStorageType = getCurrentStorageType();
-    const newStorageType = currentStorageType === 'local' ? 'server' : 'local';
-    localStorage.setItem('storageType', newStorageType);
-    return newStorageType;
-}
-
-export function saveStorageType(storageType) {
-    localStorage.setItem('storageType', storageType);
-}
-
-export function saveTodoData(keyName, arr) {
-    localStorage.setItem(keyName, JSON.stringify(arr));
-}
-
 export function getNewId(arr) {
     let maxId = 0
     for (let todoObj of arr) {
@@ -28,13 +9,11 @@ export function getNewId(arr) {
 }
 
 // 5 server functions...GET, DELETE, doneTrue, doneFalse, ADD
-export const sSHandler = {
+export const servStorageHandler = {
 
     getDataFromServer: async function (owner) {
         const response = await fetch(`http://localhost:3003/api/todos?owner=${owner}`)
-        const data = await response.json()
-        console.log(data);
-        return data
+        return await response.json()
     },
 
     deleteDataFromServer: async function (id) {
@@ -79,7 +58,7 @@ export const sSHandler = {
     }
 }
 
-export const lSHandler = {
+export const localStorageHandler = {
 
     getDataArrFromLS: function (keyName) {
         console.log('LS:', keyName)

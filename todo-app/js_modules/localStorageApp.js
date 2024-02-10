@@ -1,15 +1,12 @@
+// LS handler
+import {getNewId, localStorageHandler} from "./helpers.js"
 import {createAppTitle, createTodoItem, createTodoItemForm, createTodoList} from "./visualPart.js"
-import {sSHandler} from "./helpers.js";
-
 
 // array that include objects(or tasks) that contain(NAME, ID, DONE-status)
 let todoTasksArray = []
 
-// export let storageTypeServer = false
-
-export default async function createTodoAppWithServerStorage(container, title = 'TODO-LIST', keyWord = 'SS') {
-    console.log('S.S.')
-
+export default async function createTodoApp(container, title = 'TODO-LIST', keyWord) {
+    console.log('L.S.')
     // her we assign functions into variables
     let $todoAppTitle = createAppTitle(title)
     let $todoItemForm = createTodoItemForm()
@@ -21,14 +18,16 @@ export default async function createTodoAppWithServerStorage(container, title = 
     // container.append($switchStorageTypeBtn)
     container.append($todoList)
 
-    todoTasksArray = await sSHandler.getDataFromServer(keyWord)
-
+    // check if we have any stored string(ARRAY data) & parse it back to readable ARRAY
+    todoTasksArray = localStorageHandler.getDataArrFromLS(keyWord)
     if (!todoTasksArray) return
 
     // add every object of main ARRAY to 'createTodoItem' func for doing DOM structure & add them to TODO List
-    for (let listObj of todoTasksArray) {
-        let $todoItem = createTodoItem(listObj, todoTasksArray, 'SS');
-        $todoList.append($todoItem)
+    if (todoTasksArray) {
+        for (let listObj of todoTasksArray) {
+            let $todoItem = createTodoItem(listObj, todoTasksArray, keyWord);
+            $todoList.append($todoItem)
+        }
     }
 
     $todoItemForm.$form.addEventListener('submit', async function (e) {
@@ -41,14 +40,17 @@ export default async function createTodoAppWithServerStorage(container, title = 
         const todoNewTask = {
             name: $todoItemForm.$input.value,
             done: false,
+            id: getNewId(todoTasksArray),
             key: keyWord,
         }
-        const newTask = await sSHandler.addDataToServer(todoNewTask)
-
-        let $todoItem = createTodoItem(newTask, todoTasksArray, 'SS')
+        const $todoItem = createTodoItem(todoNewTask, todoTasksArray, 'LS')
 
         // here we add new TASK into Array of tasks
-        todoTasksArray.push(newTask)
+        todoTasksArray.push(todoNewTask)
+
+
+        // for local storage
+        localStorageHandler.saveTodoData(keyWord, todoTasksArray)
 
         // here we add new TASK into DOM element
         $todoList.append($todoItem)

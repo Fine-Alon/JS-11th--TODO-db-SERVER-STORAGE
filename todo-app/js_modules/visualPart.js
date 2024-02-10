@@ -1,4 +1,4 @@
-import {lSHandler, sSHandler} from "./helpers.js";
+import {localStorageHandler, servStorageHandler} from "./helpers.js";
 
 export function createAppTitle(title) {
     let $appTitle = document.createElement('h2')
@@ -74,9 +74,9 @@ export function createTodoItem(obj, todoTasksArr, storageType = 'LS') {
 
                 obj.done = !obj.done
                 storageType === 'LS'
-                    ? lSHandler.saveTodoData(obj.key, todoTasksArr) // for localstorage
+                    ? localStorageHandler.saveTodoData(obj.key, todoTasksArr) // for localstorage
 
-                    : await sSHandler.isTaskDone(obj.id, obj.done) // for server storage
+                    : await servStorageHandler.isTaskDone(obj.id, obj.done) // for server storage
             }
         }
     })
@@ -92,8 +92,8 @@ export function createTodoItem(obj, todoTasksArr, storageType = 'LS') {
                 }
             }
             storageType === 'LS'
-                ? lSHandler.saveTodoData(obj.key, todoTasksArr)   // for localstorage
-                : sSHandler.deleteDataFromServer(obj.id)                    // for server storage
+                ? localStorageHandler.saveTodoData(obj.key, todoTasksArr)   // for localstorage
+                : servStorageHandler.deleteDataFromServer(obj.id)          // for server storage
         }
     })
 

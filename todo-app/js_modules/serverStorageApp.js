@@ -1,33 +1,33 @@
-// LS handler
-import {getNewId, lSHandler} from "./helpers.js"
 import {createAppTitle, createTodoItem, createTodoItemForm, createTodoList} from "./visualPart.js"
+import {servStorageHandler} from "./helpers.js";
+import {createSwitchStorageTypeBtn} from "./switchBtn/switchStorageTypeBtn.js";
 
 // array that include objects(or tasks) that contain(NAME, ID, DONE-status)
 let todoTasksArray = []
 
-export default async function createTodoAppWithLocalStorage(container, title = 'TODO-LIST', keyWord) {
-    console.log('L.S.')
+export default async function createTodoApp(container, title = 'TODO-LIST', keyWord = 'my') {
+    const STORAGE_TYPE = 'SS'
+    console.log('STORAGE_TYPE:', STORAGE_TYPE)
+
     // her we assign functions into variables
     let $todoAppTitle = createAppTitle(title)
     let $todoItemForm = createTodoItemForm()
-    // let $switchStorageTypeBtn = createAppSwitchStorageTypeBtn()
+    let $switchStorageTypeBtn = createSwitchStorageTypeBtn(STORAGE_TYPE)
     let $todoList = createTodoList()
 
     container.append($todoAppTitle)
     container.append($todoItemForm.$form)
-    // container.append($switchStorageTypeBtn)
+    container.append($switchStorageTypeBtn)
     container.append($todoList)
 
-    // check if we have any stored string(ARRAY data) & parse it back to readable ARRAY
-    todoTasksArray = lSHandler.getDataArrFromLS(keyWord)
+    todoTasksArray = await servStorageHandler.getDataFromServer(keyWord)
+
     if (!todoTasksArray) return
 
     // add every object of main ARRAY to 'createTodoItem' func for doing DOM structure & add them to TODO List
-    if (todoTasksArray) {
-        for (let listObj of todoTasksArray) {
-            let $todoItem = createTodoItem(listObj, todoTasksArray, keyWord);
-            $todoList.append($todoItem)
-        }
+    for (let listObj of todoTasksArray) {
+        let $todoItem = createTodoItem(listObj, todoTasksArray, STORAGE_TYPE);
+        $todoList.append($todoItem)
     }
 
     $todoItemForm.$form.addEventListener('submit', async function (e) {
@@ -40,17 +40,14 @@ export default async function createTodoAppWithLocalStorage(container, title = '
         const todoNewTask = {
             name: $todoItemForm.$input.value,
             done: false,
-            id: getNewId(todoTasksArray),
             key: keyWord,
         }
-        const $todoItem = createTodoItem(todoNewTask, todoTasksArray, 'LS')
+        const newTask = await servStorageHandler.addDataToServer(todoNewTask)
+
+        let $todoItem = createTodoItem(newTask, todoTasksArray, STORAGE_TYPE)
 
         // here we add new TASK into Array of tasks
-        todoTasksArray.push(todoNewTask)
-
-
-        // for local storage
-        lSHandler.saveTodoData(keyWord, todoTasksArray)
+        todoTasksArray.push(newTask)
 
         // here we add new TASK into DOM element
         $todoList.append($todoItem)
