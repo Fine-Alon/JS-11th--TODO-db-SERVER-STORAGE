@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 // импорт стандартных библиотек Node.js
-const { existsSync, readFileSync, writeFileSync } = require('fs');
+const { existsSync,   readFileSync, writeFileSync } = require('fs');
 const { createServer } = require('http');
 
 // файл для базы данных дел
@@ -8,7 +8,7 @@ const DB_FILE = './db.json';
 // префикс URI для всех методов приложения
 const URI_PREFIX = '/api/todos';
 // номер порта, на котором будет запущен сервер
-const PORT = 3003;
+const PORT = 3000;
 
 /**
  * Класс ошибки, используется для отправки ответа с определённым кодом и описанием ошибки
