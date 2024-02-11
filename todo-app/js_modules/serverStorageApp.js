@@ -5,7 +5,7 @@ import {createSwitchStorageTypeBtn} from "./switchBtn/switchStorageTypeBtn.js";
 // array that include objects(or tasks) that contain(NAME, ID, DONE-status)
 let todoTasksArray = []
 
-export default async function createTodoApp(container, title = 'TODO-LIST', keyWord = 'my') {
+async function initializeTodoApp(container, title = 'TODO-LIST', keyWord = 'my') {
     const STORAGE_TYPE = 'SS'
     console.log('STORAGE_TYPE:', STORAGE_TYPE)
 
@@ -57,3 +57,4 @@ export default async function createTodoApp(container, title = 'TODO-LIST', keyW
     })
 }
 
+export {initializeTodoApp}

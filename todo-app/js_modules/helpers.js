@@ -10,14 +10,15 @@ export function getNewId(arr) {
 
 // 5 server functions...GET, DELETE, doneTrue, doneFalse, ADD
 export const servStorageHandler = {
+    URL: 'http://localhost:3000/api/todos',
 
     getDataFromServer: async function (owner) {
-        const response = await fetch(`http://localhost:3003/api/todos?owner=${owner}`)
+        const response = await fetch(`${this.URL}?owner=${owner}`)
         return await response.json()
     },
 
     deleteDataFromServer: async function (id) {
-        const response = await fetch(`http://localhost:3003/api/todos/${id}`, {
+        const response = await fetch(`${this.URL}/${id}`, {
             method: 'DELETE',
             headers: {'Content-Type': 'application/json'}
         })
@@ -29,7 +30,7 @@ export const servStorageHandler = {
     },
 
     isTaskDone: async function (id, isDone = false) {
-        const response = await fetch(`http://localhost:3003/api/todos/${id}`, {
+        const response = await fetch(`${this.URL}/${id}`, {
             method: 'PATCH',
             headers: {'Content-Type': 'application/json'},
             // { name?: string, owner?: string, done?: boolean }
@@ -43,7 +44,7 @@ export const servStorageHandler = {
 
     addDataToServer: async function (obj) {
 
-        const response = await fetch('http://localhost:3003/api/todos', {
+        const response = await fetch(`${this.URL}`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             // { name: string, owner: string, done?: boolean }

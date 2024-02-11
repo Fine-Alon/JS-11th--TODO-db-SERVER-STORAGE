@@ -1,4 +1,4 @@
-import {saveStorageType, switchStorageType} from "./switchStorageTypeApi";
+import {saveStorageType, switchStorageType} from "./switchStorageTypeApi.js";
 
 export function createSwitchStorageTypeBtn(initialStorageType = 'LS') {
     function updateBtnText() {
@@ -24,14 +24,14 @@ export function createSwitchStorageTypeBtn(initialStorageType = 'LS') {
             updateBtnText()
             console.log('switched to:',storageType)
             saveStorageType(storageType)
-            // location.reload() // Reload the page
+             location.reload() // Reload the page
 
         } else {
             storageType = switchStorageType()
             updateBtnText()
             console.log('switched to:',storageType)
             saveStorageType(storageType)
-            // location.reload() // Reload the page
+             location.reload() // Reload the page
         }
     })
 
